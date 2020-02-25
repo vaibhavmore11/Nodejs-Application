@@ -7,7 +7,12 @@
 
 
 
-##### Then run the following commands to start up the app
+##### Then run the following commands to start up the app, Please run this application before starting front end application
+
+### to check database
+MONGO_URI=mongodb://localhost:27017/nodeapi
+
+
 
 ### Step 1
 
