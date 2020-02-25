@@ -17,7 +17,7 @@ cd nodeapi
 
 npm install
 
-# step 3
+### step 3
 
 npm start
 ```
