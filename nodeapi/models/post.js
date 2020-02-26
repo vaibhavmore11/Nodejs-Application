@@ -1,6 +1,9 @@
 const mongoose = require('mongoose');
 const { ObjectId } = mongoose.Schema;
 
+// data types for required fields on post
+
+
 const postSchema = new mongoose.Schema({
     title: {
         type: String,

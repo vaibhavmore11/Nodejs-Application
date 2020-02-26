@@ -20,13 +20,16 @@ exports.postById = (req, res, next, id) => {
         });
 };
 
-
+// pagination
 exports.getPosts = async (req, res) => {
+    //get current page
     const currentPage = req.query.page || 1;
+    //return post per page
     const perPage = 6;
     let totalItems;
 
     const posts = await Post.find()
+    // to get total count of posts
         .countDocuments()
         .then(count => {
             totalItems = count;
@@ -44,7 +47,7 @@ exports.getPosts = async (req, res) => {
         })
         .catch(err => console.log(err));
 };
-
+// create post
 exports.createPost = (req, res, next) => {
     let form = new formidable.IncomingForm();
     form.keepExtensions = true;
@@ -74,7 +77,7 @@ exports.createPost = (req, res, next) => {
         });
     });
 };
-
+// to get post by user
 exports.postsByUser = (req, res) => {
     Post.find({ postedBy: req.profile._id })
         .populate('postedBy', '_id name')
@@ -89,7 +92,7 @@ exports.postsByUser = (req, res) => {
             res.json(posts);
         });
 };
-
+// to verify user is authorized or not
 exports.isPoster = (req, res, next) => {
     let sameUser = req.post && req.auth && req.post.postedBy._id == req.auth._id;
     let adminUser = req.post && req.auth && req.auth.role === 'admin';
@@ -104,14 +107,14 @@ exports.isPoster = (req, res, next) => {
     }
     next();
 };
-
+// update post
 exports.updatePost = (req, res, next) => {
     let form = new formidable.IncomingForm();
     form.keepExtensions = true;
     form.parse(req, (err, fields, files) => {
         if (err) {
             return res.status(400).json({
-                error: 'Photo could not be uploaded'
+                error: 'Photo could not be uploaded' // error message for the photo
             });
         }
         // to save post
@@ -135,6 +138,8 @@ exports.updatePost = (req, res, next) => {
     });
 };
 
+// to delete a post
+
 exports.deletePost = (req, res) => {
     let post = req.post;
     post.remove((err, post) => {
@@ -149,14 +154,19 @@ exports.deletePost = (req, res) => {
     });
 };
 
+// to get a photo
+
 exports.photo = (req, res, next) => {
     res.set('Content-Type', req.post.photo.contentType);
     return res.send(req.post.photo.data);
 };
+// to get a post
 
 exports.singlePost = (req, res) => {
     return res.json(req.post);
 };
+
+// for like on a post
 
 exports.like = (req, res) => {
     Post.findByIdAndUpdate(req.body.postId, { $push: { likes: req.body.userId } }, { new: true }).exec(
@@ -172,6 +182,8 @@ exports.like = (req, res) => {
     );
 };
 
+// for unlike on a post
+
 exports.unlike = (req, res) => {
     Post.findByIdAndUpdate(req.body.postId, { $pull: { likes: req.body.userId } }, { new: true }).exec(
         (err, result) => {
@@ -185,6 +197,8 @@ exports.unlike = (req, res) => {
         }
     );
 };
+
+// for comment on a post
 
 exports.comment = (req, res) => {
     let comment = req.body.comment;
@@ -204,6 +218,8 @@ exports.comment = (req, res) => {
         });
 };
 
+// for uncomment on a post
+
 exports.uncomment = (req, res) => {
     let comment = req.body.comment;
 
@@ -222,6 +238,7 @@ exports.uncomment = (req, res) => {
 };
 
 
+// update comment
 
 exports.updateComment = (req, res) => {
     let comment = req.body.comment;

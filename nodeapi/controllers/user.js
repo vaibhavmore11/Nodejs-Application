@@ -14,10 +14,13 @@ exports.userById = (req, res, next, id) => {
                     error: 'User not found'
                 });
             }
+            // add a profile object in req with user info
             req.profile = user; 
             next();
         });
 };
+
+// authorization
 
 exports.hasAuthorization = (req, res, next) => {
     let sameUser = req.profile && req.auth && req.profile._id == req.auth._id;
@@ -34,6 +37,8 @@ exports.hasAuthorization = (req, res, next) => {
     next();
 };
 
+// all users information
+
 exports.allUsers = (req, res) => {
     User.find((err, users) => {
         if (err) {
@@ -45,12 +50,15 @@ exports.allUsers = (req, res) => {
     }).select('name email updated created role');
 };
 
+// for a particular user
+
 exports.getUser = (req, res) => {
     req.profile.hashed_password = undefined;
     req.profile.salt = undefined;
     return res.json(req.profile);
 };
 
+// to update a user information
 
 exports.updateUser = (req, res, next) => {
     let form = new formidable.IncomingForm();
@@ -87,6 +95,8 @@ exports.updateUser = (req, res, next) => {
     });
 };
 
+// to get photo of a particular user
+
 exports.userPhoto = (req, res, next) => {
     if (req.profile.photo.data) {
         res.set(('Content-Type', req.profile.photo.contentType));
@@ -94,6 +104,8 @@ exports.userPhoto = (req, res, next) => {
     }
     next();
 };
+
+// to delete a user
 
 exports.deleteUser = (req, res, next) => {
     let user = req.profile;
@@ -107,6 +119,7 @@ exports.deleteUser = (req, res, next) => {
     });
 };
 
+// follow 
 
 exports.addFollowing = (req, res, next) => {
     User.findByIdAndUpdate(req.body.userId, { $push: { following: req.body.followId } }, (err, result) => {
@@ -133,6 +146,7 @@ exports.addFollower = (req, res) => {
         });
 };
 
+// unfollow
 
 exports.removeFollowing = (req, res, next) => {
     User.findByIdAndUpdate(req.body.userId, { $pull: { following: req.body.unfollowId } }, (err, result) => {

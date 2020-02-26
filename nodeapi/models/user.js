@@ -4,6 +4,8 @@ const crypto = require("crypto");
 const { ObjectId } = mongoose.Schema;
 const Post = require("./post");
 
+// data types for required fields on user
+
 const userSchema = new mongoose.Schema({
     name: {
         type: String,
@@ -59,6 +61,7 @@ userSchema
         return this._password;
     });
 
+// methods to authenticate and encrypt password
 
 userSchema.methods = {
     authenticate: function(plainText) {

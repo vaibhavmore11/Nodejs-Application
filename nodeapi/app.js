@@ -20,9 +20,12 @@ mongoose.connection.on('error', err => {
     console.log(`DB connection error: ${err.message}`);
 });
 
+// all routes
 const postRoutes = require('./routes/post');
 const authRoutes = require('./routes/auth');
 const userRoutes = require('./routes/user');
+
+//api docs
 
 app.get('/api', (req, res) => {
     fs.readFile('docs/apiDocs.json', (err, data) => {
@@ -35,6 +38,8 @@ app.get('/api', (req, res) => {
         res.json(docs);
     });
 });
+
+// all middlewares
 
 app.use(morgan('dev'));
 app.use(bodyParser.json());
